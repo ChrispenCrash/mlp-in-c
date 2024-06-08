@@ -44,7 +44,26 @@ void generate_sin_data(char *filename) {
     fclose(fptr);
 }
 
+void generate_xnor_data(char *filename) {
+    FILE *fptr;
+    fptr = fopen(filename, "w");
+    if (fptr == NULL) {
+        printf("Error!");
+        exit(1);
+    }
+
+    fprintf(fptr, "x1,x2,y\n");
+
+    for (int i = 0; i < 100; i++) {
+        int x1 = rand() % 2;
+        int x2 = rand() % 2;
+        int y = (x1 == x2) ? 1 : 0;
+        fprintf(fptr, "%d,%d,%d\n", x1, x2, y);
+    }
+}
+
 int main() {
     generate_sin_data("data/sin_data.csv");
+    generate_xnor_data("data/xnor_data.csv");
     return 0;
 }
