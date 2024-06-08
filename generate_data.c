@@ -39,7 +39,7 @@ void generate_sin_data(char *filename) {
     for (double i = 0.0; i <= 10.0; i += 0.05) {
         double sineValue = sin(i);
         double noisySineValue = sineValue + generateGaussianNoise(mean, stdDev);
-        fprintf(fptr, "%.1f,%.8f\n", i, noisySineValue);
+        fprintf(fptr, "%.2f,%.8f\n", i, noisySineValue);
     }
     fclose(fptr);
 }
