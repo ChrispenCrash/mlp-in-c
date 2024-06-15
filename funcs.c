@@ -91,3 +91,23 @@ DataSet read_data(const char *filename) {
 
     return result;
 }
+
+void print_data(DataSet dataSet) {
+    int head = dataSet.rows > 5 ? 5 : dataSet.rows;
+    for (int i = 0; i < head; i++) {
+        for (int j = 0; j < dataSet.cols; j++) {
+            printf("%.02f", dataSet.data[i][j]);
+            if (j < dataSet.cols - 1) {
+                printf(", ");
+            }
+        }
+        printf("\n");
+    }
+}
+
+void free_data(DataSet dataSet) {
+    for (int i = 0; i < dataSet.rows; i++) {
+        free(dataSet.data[i]);
+    }
+    free(dataSet.data);
+}

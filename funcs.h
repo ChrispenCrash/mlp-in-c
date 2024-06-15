@@ -9,4 +9,7 @@ typedef struct {
 
 DataSet read_data(const char *filename);
 
+void print_data(DataSet dataSet);
+void free_data(DataSet dataSet);
+
 #endif
