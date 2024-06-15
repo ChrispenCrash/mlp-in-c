@@ -1,23 +1,28 @@
 #include "funcs.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-double **read_data(const char *filename, int *rows, int *cols) {
+#define INITIAL_CAPACITY 10
+
+DataSet read_data(const char *filename) {
+    DataSet result;
+    result.data = NULL;
+    result.rows = 0;
+    result.cols = 0;
     FILE *file;
     char *line = NULL;
     size_t len = 0;
-    int read;
+    size_t read;
     char *token;
-    int row_count = 0;
-    int col_count = 0;
     int capacity = INITIAL_CAPACITY;
-    double **data = NULL;
 
     // Open the CSV file
     file = fopen(filename, "r");
     if (file == NULL) {
         perror("Unable to open file");
-        exit(EXIT_FAILURE);
+        return result;
     }
 
     // Read the first line (header) to determine the number of columns
@@ -25,62 +30,64 @@ double **read_data(const char *filename, int *rows, int *cols) {
         // Count the number of columns in the header
         token = strtok(line, ",");
         while (token != NULL) {
-            col_count++;
+            result.cols++;
             token = strtok(NULL, ",");
         }
     }
 
     // Allocate initial memory for data array (rows)
-    data = malloc(capacity * sizeof(double *));
-    if (data == NULL) {
+    result.data = malloc(capacity * sizeof(double *));
+    if (result.data == NULL) {
         perror("Unable to allocate memory");
-        exit(EXIT_FAILURE);
+        fclose(file);
+        free(line);
+        return result;
     }
 
     // Read each line from the file
     while ((read = getline(&line, &len, file)) != -1) {
-        if (row_count == 0) {
+        if (result.rows == 0) {
             // Skip the header row
-            row_count++;
+            result.rows++;
             continue;
         }
 
         // Reallocate memory if row capacity is reached
-        if (row_count >= capacity) {
+        if (result.rows >= capacity) {
             capacity *= 2;
-            data = realloc(data, capacity * sizeof(double *));
-            if (data == NULL) {
+            result.data = realloc(result.data, capacity * sizeof(double *));
+            if (result.data == NULL) {
                 perror("Unable to reallocate memory");
-                exit(EXIT_FAILURE);
+                fclose(file);
+                free(line);
+                return result;
             }
         }
 
         // Allocate memory for each row (columns)
-        data[row_count] = malloc(col_count * sizeof(double));
-        if (data[row_count] == NULL) {
+        result.data[result.rows] = malloc(result.cols * sizeof(double));
+        if (result.data[result.rows] == NULL) {
             perror("Unable to allocate memory for row");
-            exit(EXIT_FAILURE);
+            fclose(file);
+            free(line);
+            return result;
         }
 
         // Split the line into tokens (columns) and store as double
         int col = 0;
         token = strtok(line, ",");
         while (token != NULL) {
-            data[row_count][col] = atof(token);
+            result.data[result.rows][col] = atof(token);
             col++;
             token = strtok(NULL, ",");
         }
 
-        row_count++;
+        result.rows++;
     }
 
     // Close the file and free the line buffer
     fclose(file);
     free(line);
 
-    // Set the output parameters
-    *rows = row_count;
-    *cols = col_count;
-
-    return data;
+    return result;
 }

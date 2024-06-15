@@ -14,3 +14,7 @@ endif
 
 clean:
 	$(rm) *.exe
+
+
+run:
+	./mlp.exe data\sin_data.csv

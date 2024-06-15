@@ -1,11 +1,12 @@
 #ifndef FUNCS_H
 #define FUNCS_H
 
-#include <stdio.h>
-#include <stdlib.h>
+typedef struct {
+    double **data;
+    int rows;
+    int cols;
+} DataSet;
 
-#define INITIAL_CAPACITY 10
-
-double **read_data(const char *filename, int *rows, int *cols);
+DataSet read_data(const char *filename);
 
 #endif

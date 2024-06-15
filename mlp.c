@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "funcs.h"
 
@@ -10,23 +11,18 @@ int main(int argc, char **argv) {
     }
 
     const char *filename = argv[1];
-    double **data = NULL;
-    int rows = 0;
-    int cols = 0;
+    DataSet dataSet = read_data(filename);
 
-    // Read data from the CSV file
-    data = read_data(filename, &rows, &cols);
-
-    // Print the stored data (for verification)
-    for (int i = 0; i < rows; i++) {
-        printf("%.2f, %.8f\n", data[i][0], data[i][1]);
+    int head = dataSet.rows > 5 ? 5 : dataSet.rows;
+    for (int i = 0; i < head; i++) {
+        printf("%.2f, %.8f\n", dataSet.data[i][0], dataSet.data[i][1]);
     }
 
     // Free allocated memory
-    for (int i = 0; i < rows; i++) {
-        free(data[i]);
+    for (int i = 0; i < dataSet.rows; i++) {
+        free(dataSet.data[i]);
     }
-    free(data);
+    free(dataSet.data);
 
     return 0;
 }
