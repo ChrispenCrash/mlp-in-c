@@ -3,6 +3,7 @@
 
 typedef struct {
     double **data;
+    char **columns;
     int rows;
     int cols;
 } DataSet;

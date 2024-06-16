@@ -9,8 +9,10 @@
 DataSet read_data(const char *filename) {
     DataSet result;
     result.data = NULL;
+    result.columns = NULL;
     result.rows = 0;
     result.cols = 0;
+
     FILE *file;
     char *line = NULL;
     size_t len = 0;
@@ -25,12 +27,39 @@ DataSet read_data(const char *filename) {
         return result;
     }
 
-    // Read the first line (header) to determine the number of columns
+    // Read the first line (header) to determine the number of columns and store
+    // column names
     if ((read = getline(&line, &len, file)) != -1) {
         // Count the number of columns in the header
         token = strtok(line, ",");
         while (token != NULL) {
             result.cols++;
+            token = strtok(NULL, ",");
+        }
+
+        // Allocate memory for columns
+        result.columns = malloc(result.cols * sizeof(char *));
+        if (result.columns == NULL) {
+            perror("Unable to allocate memory for columns");
+            fclose(file);
+            free(line);
+            return result;
+        }
+
+        // Store column names
+        rewind(file);  // Reset file pointer to beginning of file
+        read = getline(&line, &len, file);
+        token = strtok(line, ",");
+        int col_idx = 0;
+        while (token != NULL) {
+            result.columns[col_idx] = strdup(token);
+            if (result.columns[col_idx] == NULL) {
+                perror("Unable to allocate memory for column name");
+                fclose(file);
+                free(line);
+                return result;
+            }
+            col_idx++;
             token = strtok(NULL, ",");
         }
     }
@@ -44,11 +73,11 @@ DataSet read_data(const char *filename) {
         return result;
     }
 
-    // Read each line from the file
+    // Read each line from the file (skipping the header)
+    int is_header = 1;  // flag to check header row
     while ((read = getline(&line, &len, file)) != -1) {
-        if (result.rows == 0) {
-            // Skip the header row
-            result.rows++;
+        if (is_header) {
+            is_header = 0;
             continue;
         }
 
@@ -94,6 +123,16 @@ DataSet read_data(const char *filename) {
 
 void print_data(DataSet dataSet) {
     int head = dataSet.rows > 5 ? 5 : dataSet.rows;
+    // Print column names
+    for (int j = 0; j < dataSet.cols; j++) {
+        printf("%s", dataSet.columns[j]);
+        if (j < dataSet.cols - 1) {
+            printf(", ");
+        }
+    }
+    printf("\n");
+
+    // Print data
     for (int i = 0; i < head; i++) {
         for (int j = 0; j < dataSet.cols; j++) {
             printf("%.02f", dataSet.data[i][j]);
@@ -110,4 +149,9 @@ void free_data(DataSet dataSet) {
         free(dataSet.data[i]);
     }
     free(dataSet.data);
+
+    for (int j = 0; j < dataSet.cols; j++) {
+        free(dataSet.columns[j]);
+    }
+    free(dataSet.columns);
 }

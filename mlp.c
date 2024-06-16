@@ -15,7 +15,10 @@ int main(int argc, char **argv) {
 
     print_data(dataSet);
 
-    free_data(dataSet);
+    
 
+
+
+    free_data(dataSet);
     return 0;
 }

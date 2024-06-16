@@ -17,4 +17,4 @@ clean:
 
 
 run:
-	./mlp.exe data\sin_data.csv
+	./mlp.exe data\xnor_data.csv
