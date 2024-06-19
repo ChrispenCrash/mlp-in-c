@@ -13,13 +13,15 @@ int main(int argc, char **argv) {
     const char *filename = argv[1];
     DataSet dataSet = read_data(filename);
 
-    print_data(dataSet);
+    // print_data(dataSet);
 
     printf("Dataset has %d rows and %d columns\n", dataSet.nrows,
            dataSet.ncols);
 
     print_head(dataSet);
     print_tail(dataSet);
+
+    
 
     free_data(dataSet);
     return 0;
