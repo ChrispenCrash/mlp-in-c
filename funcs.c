@@ -73,14 +73,8 @@ DataSet read_data(const char *filename) {
         return result;
     }
 
-    // Read each line from the file (skipping the header)
-    int is_header = 0;  // flag to check header row
+    // Read each line from the file
     while ((read = getline(&line, &len, file)) != -1) {
-        if (is_header) {
-            is_header = 0;
-            continue;
-        }
-
         // Reallocate memory if row capacity is reached
         if (result.nrows >= capacity) {
             capacity *= 2;
