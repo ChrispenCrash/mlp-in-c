@@ -15,9 +15,11 @@ int main(int argc, char **argv) {
 
     print_data(dataSet);
 
-    
+    printf("Dataset has %d rows and %d columns\n", dataSet.nrows,
+           dataSet.ncols);
 
-
+    print_head(dataSet);
+    print_tail(dataSet);
 
     free_data(dataSet);
     return 0;
