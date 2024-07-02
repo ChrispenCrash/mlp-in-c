@@ -1,7 +1,7 @@
 all: mlp
 
 mlp:
-	gcc -o mlp mlp.c funcs.c
+	gcc -o mlp mlp.c mat.c
 
 data_gen:
 	gcc -o data_gen data_gen.c

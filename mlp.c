@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "funcs.h"
+#include "mat.h"
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
     }
 
     const char *filename = argv[1];
-    DataSet dataSet = read_data(filename);
+    Matrix dataSet = read_data(filename);
 
     // print_data(dataSet);
 
@@ -20,7 +20,6 @@ int main(int argc, char **argv) {
 
     print_head(dataSet);
     // print_tail(dataSet);
-    
 
     free_data(dataSet);
     return 0;

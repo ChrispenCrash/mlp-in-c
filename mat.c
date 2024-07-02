@@ -1,4 +1,4 @@
-#include "funcs.h"
+#include "mat.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,8 +6,8 @@
 
 #define INITIAL_CAPACITY 10
 
-DataSet read_data(const char *filename) {
-    DataSet result;
+Matrix read_data(const char *filename) {
+    Matrix result;
     result.data = NULL;
     result.columns = NULL;
     result.nrows = 0;
@@ -115,7 +115,7 @@ DataSet read_data(const char *filename) {
     return result;
 }
 
-void print_cols(DataSet dataSet) {
+void print_cols(Matrix dataSet) {
     for (int j = 0; j < dataSet.ncols; j++) {
         // printf("%s\t", dataSet.columns[j]);
         // Print columns with tab unless it's the last column
@@ -127,7 +127,7 @@ void print_cols(DataSet dataSet) {
     }
 }
 
-void print_data(DataSet dataSet) {
+void print_data(Matrix dataSet) {
     print_cols(dataSet);
 
     for (int i = 0; i < dataSet.nrows; i++) {
@@ -141,7 +141,7 @@ void print_data(DataSet dataSet) {
     }
 }
 
-void print_head(DataSet dataSet) {
+void print_head(Matrix dataSet) {
     print_cols(dataSet);
 
     int head = dataSet.nrows > 5 ? 5 : dataSet.nrows;
@@ -156,7 +156,7 @@ void print_head(DataSet dataSet) {
     }
 }
 
-void print_tail(DataSet dataSet) {
+void print_tail(Matrix dataSet) {
     print_cols(dataSet);
 
     int tail = dataSet.nrows > 5 ? dataSet.nrows - 5 : 0;
@@ -172,7 +172,7 @@ void print_tail(DataSet dataSet) {
     }
 }
 
-void free_data(DataSet dataSet) {
+void free_data(Matrix dataSet) {
     for (int i = 0; i < dataSet.nrows; i++) {
         free(dataSet.data[i]);
     }
