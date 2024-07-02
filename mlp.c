@@ -19,8 +19,7 @@ int main(int argc, char **argv) {
            dataSet.ncols);
 
     print_head(dataSet);
-    print_tail(dataSet);
-
+    // print_tail(dataSet);
     
 
     free_data(dataSet);
