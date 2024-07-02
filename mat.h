@@ -9,11 +9,15 @@ typedef struct {
 } Matrix;
 
 Matrix read_data(const char *filename);
+Matrix matmul(Matrix matrix1, Matrix matrix2);
+Matrix new_matrix(int nrows, int ncols);
 
-void print_data(Matrix dataSet);
-void print_head(Matrix dataSet);
-void print_tail(Matrix dataSet);
-void print_cols(Matrix dataSet);
-void free_data(Matrix dataSet);
+void print_data(Matrix matrix);
+void print_head(Matrix matrix);
+void print_tail(Matrix matrix);
+void print_cols(Matrix matrix);
+void free_data(Matrix matrix);
+
+double generateGaussianNoise(double mean, double stdDev);
 
 #endif

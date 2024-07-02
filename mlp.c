@@ -20,7 +20,23 @@ int main(int argc, char **argv) {
 
     print_head(dataSet);
     // print_tail(dataSet);
+    printf("--------------------\n");
 
+    double noise = generateGaussianNoise(0.0, 0.1);
+
+    printf("Noise: %.02f\n", noise);
+
+    Matrix m_new = new_matrix(10, 10);
+
+    if (m_new.data == NULL) {
+        printf("Failed to create new matrix\n");
+        free_data(dataSet);
+        return 1;
+    }
+
+    print_head(m_new);
+
+    free_data(m_new);
     free_data(dataSet);
     return 0;
 }
