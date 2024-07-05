@@ -283,3 +283,7 @@ double generateGaussianNoise(double mean, double stddev) {
     spare = v * s;
     return mean + stddev * (u * s);
 }
+
+double random(int min, int max) {
+    return min + rand() / (RAND_MAX / (max - min + 1) + 1);
+}
