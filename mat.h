@@ -19,5 +19,6 @@ void print_cols(Matrix matrix);
 void free_data(Matrix matrix);
 
 double generateGaussianNoise(double mean, double stdDev);
+double random(double min, double max);
 
 #endif

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define INITIAL_CAPACITY 10
 
@@ -252,6 +253,8 @@ Matrix new_matrix(int nrows, int ncols) {
         }
     }
 
+    printf("%d x %d matrix created\n", nrows, ncols);
+
     // Fill matrix with random Gaussian noise
     for (int i = 0; i < nrows; i++) {
         for (int j = 0; j < ncols; j++) {
@@ -284,6 +287,7 @@ double generateGaussianNoise(double mean, double stddev) {
     return mean + stddev * (u * s);
 }
 
-double random(int min, int max) {
+double random(double min, double max) {
+    srand(time(NULL));
     return min + rand() / (RAND_MAX / (max - min + 1) + 1);
 }

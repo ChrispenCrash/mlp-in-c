@@ -34,7 +34,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    print_head(m_new);
+    // print_head(m_new);
+    printf("Random number between 0 and 1: %.02f\n", random(0, 1));
 
     free_data(m_new);
     free_data(dataSet);
