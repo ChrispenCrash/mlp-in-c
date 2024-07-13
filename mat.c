@@ -33,10 +33,10 @@ Matrix read_data(const char *filename) {
     // column names
     if ((read = getline(&line, &len, file)) != -1) {
         // Count the number of columns in the header
-        token = line;
+        token = strtok(line, ",");
         while (token != NULL) {
             m.ncols++;
-            token = NULL;
+            token = strtok(NULL, ",");
         }
 
         // Allocate memory for columns
@@ -51,7 +51,7 @@ Matrix read_data(const char *filename) {
         // Store column names
         rewind(file);  // Reset file pointer to beginning of file
         read = getline(&line, &len, file);
-        token = line;
+        token = strtok(line, ",");
         int col_idx = 0;
         while (token != NULL) {
             m.columns[col_idx] = strdup(token);
@@ -62,7 +62,7 @@ Matrix read_data(const char *filename) {
                 return m;
             }
             col_idx++;
-            token = NULL;
+            token = strtok(NULL, ",");
         }
     }
 
@@ -100,11 +100,11 @@ Matrix read_data(const char *filename) {
 
         // Split the line into tokens (columns) and store as double
         int col = 0;
-        token = line;
+        token = strtok(line, ",");
         while (token != NULL) {
             m.data[m.nrows][col] = atof(token);
             col++;
-            token = NULL;
+            token = strtok(NULL, ",");
         }
 
         m.nrows++;

@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 
     print_head(dataSet);
     // print_tail(dataSet);
+
     printf("--------------------\n");
 
     Matrix m_new = new_matrix(3, 3);
