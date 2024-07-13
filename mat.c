@@ -33,10 +33,10 @@ Matrix read_data(const char *filename) {
     // column names
     if ((read = getline(&line, &len, file)) != -1) {
         // Count the number of columns in the header
-        token = strtok(line, ",");
+        token = line;
         while (token != NULL) {
             m.ncols++;
-            token = strtok(NULL, ",");
+            token = NULL;
         }
 
         // Allocate memory for columns
@@ -51,7 +51,7 @@ Matrix read_data(const char *filename) {
         // Store column names
         rewind(file);  // Reset file pointer to beginning of file
         read = getline(&line, &len, file);
-        token = strtok(line, ",");
+        token = line;
         int col_idx = 0;
         while (token != NULL) {
             m.columns[col_idx] = strdup(token);
@@ -62,7 +62,7 @@ Matrix read_data(const char *filename) {
                 return m;
             }
             col_idx++;
-            token = strtok(NULL, ",");
+            token = NULL;
         }
     }
 
@@ -100,11 +100,11 @@ Matrix read_data(const char *filename) {
 
         // Split the line into tokens (columns) and store as double
         int col = 0;
-        token = strtok(line, ",");
+        token = line;
         while (token != NULL) {
             m.data[m.nrows][col] = atof(token);
             col++;
-            token = strtok(NULL, ",");
+            token = NULL;
         }
 
         m.nrows++;
@@ -117,73 +117,60 @@ Matrix read_data(const char *filename) {
     return m;
 }
 
-void print_cols(Matrix matrix) {
-    for (int j = 0; j < matrix.ncols; j++) {
-        // printf("%s\t", matrix.columns[j]);
-        // Print columns with tab unless it's the last column
-        if (j < matrix.ncols - 1) {
-            printf("%s\t", matrix.columns[j]);
+void print_cols(Matrix m) {
+    for (int j = 0; j < m.ncols; j++) {
+        if (j < m.ncols - 1) {
+            printf("%s\t", m.columns[j]);
         } else {
-            printf("%s", matrix.columns[j]);
+            printf("%s", m.columns[j]);
         }
     }
 }
 
-void print_data(Matrix matrix) {
-    print_cols(matrix);
-
-    for (int i = 0; i < matrix.nrows; i++) {
-        for (int j = 0; j < matrix.ncols; j++) {
-            printf("%.02f", matrix.data[i][j]);
-            if (j < matrix.ncols - 1) {
-                printf(", ");
-            }
+void print_data(Matrix m) {
+    for (int i = 0; i < m.nrows; i++) {
+        for (int j = 0; j < m.ncols; j++) {
+            printf("%.02f\t", m.data[i][j]);
         }
         printf("\n");
     }
 }
 
-void print_head(Matrix matrix) {
-    print_cols(matrix);
+void print_head(Matrix m) {
+    print_cols(m);
 
-    int head = matrix.nrows > 5 ? 5 : matrix.nrows;
+    int head = m.nrows > 5 ? 5 : m.nrows;
     for (int i = 0; i < head; i++) {
-        for (int j = 0; j < matrix.ncols; j++) {
-            printf("%.02f", matrix.data[i][j]);
-            if (j < matrix.ncols - 1) {
-                printf(", ");
-            }
+        for (int j = 0; j < m.ncols; j++) {
+            printf("%.02f\t", m.data[i][j]);
         }
         printf("\n");
     }
 }
 
-void print_tail(Matrix matrix) {
-    print_cols(matrix);
+void print_tail(Matrix m) {
+    print_cols(m);
 
-    int tail = matrix.nrows > 5 ? matrix.nrows - 5 : 0;
+    int tail = m.nrows > 5 ? m.nrows - 5 : 0;
 
-    for (int i = tail; i < matrix.nrows; i++) {
-        for (int j = 0; j < matrix.ncols; j++) {
-            printf("%.02f", matrix.data[i][j]);
-            if (j < matrix.ncols - 1) {
-                printf(", ");
-            }
+    for (int i = tail; i < m.nrows; i++) {
+        for (int j = 0; j < m.ncols; j++) {
+            printf("%.02f\t", m.data[i][j]);
         }
         printf("\n");
     }
 }
 
-void free_data(Matrix matrix) {
-    for (int i = 0; i < matrix.nrows; i++) {
-        free(matrix.data[i]);
+void free_data(Matrix m) {
+    for (int i = 0; i < m.nrows; i++) {
+        free(m.data[i]);
     }
-    free(matrix.data);
+    free(m.data);
 
-    for (int j = 0; j < matrix.ncols; j++) {
-        free(matrix.columns[j]);
+    for (int j = 0; j < m.ncols; j++) {
+        free(m.columns[j]);
     }
-    free(matrix.columns);
+    free(m.columns);
 }
 
 Matrix matmul(Matrix matrix1, Matrix matrix2) {
@@ -253,12 +240,11 @@ Matrix new_matrix(int nrows, int ncols) {
         }
     }
 
-    printf("%d x %d matrix created\n", nrows, ncols);
-
     // Fill matrix with random Gaussian noise
     for (int i = 0; i < nrows; i++) {
         for (int j = 0; j < ncols; j++) {
             m.data[i][j] = generateGaussianNoise(0.0, 0.1);
+            // m.data[i][j] = random(-1.0, 1.0);
         }
     }
 
@@ -266,6 +252,7 @@ Matrix new_matrix(int nrows, int ncols) {
 }
 
 double generateGaussianNoise(double mean, double stddev) {
+    srand(time(NULL));
     static int haveSpare = 0;
     static double spare;
 
