@@ -1,10 +1,18 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -std=c11
+LDFLAGS = -lm
+
 all: mlp
 
-mlp:
-	gcc -o mlp mlp.c mat.c
+mlp: mlp.c mat.c mat.h
+	$(CC) $(CFLAGS) -o mlp mlp.c mat.c $(LDFLAGS)
 
-data_gen:
-	gcc -o data_gen data_gen.c
+test_matrix_io: tests/test_matrix_io.c mat.c mat.h
+	$(CC) $(CFLAGS) -o tests/test_matrix_io tests/test_matrix_io.c mat.c $(LDFLAGS)
+
+test: test_matrix_io
+	./tests/test_matrix_io
+	python3 tests/test_prepare_data.py
 
 ifeq ($(wildcard /bin/uname),)
     rm = del /q
@@ -13,8 +21,8 @@ else
 endif
 
 clean:
-	$(rm) *.exe
+	$(rm) mlp tests/test_matrix_io tests/tmp_matrix.bin
 
 
 run:
-	./mlp.exe data\xnor_data.csv
+	./mlp data/prepared/x_train.bin

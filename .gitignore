@@ -1,1 +1,6 @@
 *.exe
+__pycache__/
+mlp
+tests/test_matrix_io
+tests/tmp_matrix.bin
+data/prepared/
