@@ -12,6 +12,7 @@ test_matrix_io: tests/test_matrix_io.c mat.c mat.h
 
 test: test_matrix_io
 	./tests/test_matrix_io
+	python3 tests/test_generate_data.py
 	python3 tests/test_prepare_data.py
 
 ifeq ($(wildcard /bin/uname),)

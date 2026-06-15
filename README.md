@@ -7,10 +7,14 @@ implementation.
 Prepared matrix files use a simple binary format:
 
 ```text
-int rows
-int cols
-double values[rows * cols]  # row-major order
+int rows                    # native C int, 4 bytes on supported builds
+int cols                    # native C int, 4 bytes on supported builds
+double values[rows * cols]  # native C double, row-major order
 ```
+
+The binary files are intentionally simple and are meant to be prepared and
+consumed on the same platform. CSV remains the portable, human-readable format
+at the edges of the workflow.
 
 ## Usage
 

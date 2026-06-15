@@ -21,16 +21,15 @@ def read_csv(path: Path):
     return reader.fieldnames, rows
 
 
-def write_matrix(path: Path, rows) -> None:
+def write_matrix(path: Path, rows, col_count: int) -> None:
     row_count = len(rows)
-    col_count = len(rows[0]) if rows else 0
 
     with path.open("wb") as handle:
-        handle.write(struct.pack("ii", row_count, col_count))
+        handle.write(struct.pack("=ii", row_count, col_count))
         for row in rows:
             if len(row) != col_count:
                 raise ValueError("all rows must have the same number of columns")
-            handle.write(struct.pack(f"{col_count}d", *row))
+            handle.write(struct.pack(f"={col_count}d", *row))
 
 
 def split_rows(rows, test_ratio: float, seed: int):
@@ -38,7 +37,7 @@ def split_rows(rows, test_ratio: float, seed: int):
     random.Random(seed).shuffle(shuffled)
 
     test_count = round(len(shuffled) * test_ratio)
-    if len(shuffled) > 1:
+    if test_ratio > 0.0 and len(shuffled) > 1:
         test_count = max(1, min(len(shuffled) - 1, test_count))
 
     return shuffled[test_count:], shuffled[:test_count]
@@ -81,13 +80,19 @@ def main() -> int:
     write_matrix(
         output_dir / "x_train.bin",
         [[row[name] for name in features] for row in train_rows],
+        len(features),
     )
-    write_matrix(output_dir / "y_train.bin", [[row[args.target]] for row in train_rows])
+    write_matrix(
+        output_dir / "y_train.bin", [[row[args.target]] for row in train_rows], 1
+    )
     write_matrix(
         output_dir / "x_test.bin",
         [[row[name] for name in features] for row in test_rows],
+        len(features),
     )
-    write_matrix(output_dir / "y_test.bin", [[row[args.target]] for row in test_rows])
+    write_matrix(
+        output_dir / "y_test.bin", [[row[args.target]] for row in test_rows], 1
+    )
 
     with (output_dir / "metadata.txt").open("w") as handle:
         handle.write(f"source={args.input}\n")

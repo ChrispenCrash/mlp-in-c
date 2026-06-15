@@ -9,7 +9,7 @@ from pathlib import Path
 def generate_sin_data(path: Path, seed: int, count: int) -> None:
     rng = random.Random(seed)
     with path.open("w", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["x", "y"])
         for index in range(count):
             x = index * 10.0 / (count - 1)
@@ -25,7 +25,7 @@ def generate_xnor_data(path: Path) -> None:
         (1.0, 1.0, 1.0),
     ]
     with path.open("w", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["x1", "x2", "y"])
         writer.writerows(rows)
 
@@ -41,6 +41,8 @@ def main() -> int:
         help="Number of samples to generate for sin_data.csv.",
     )
     args = parser.parse_args()
+    if args.sin_count < 2:
+        parser.error("--sin-count must be at least 2")
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

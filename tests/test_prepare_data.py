@@ -8,8 +8,8 @@ from pathlib import Path
 
 def read_matrix(path: Path):
     with path.open("rb") as handle:
-        rows, cols = struct.unpack("ii", handle.read(8))
-        values = struct.unpack(f"{rows * cols}d", handle.read(rows * cols * 8))
+        rows, cols = struct.unpack("=ii", handle.read(8))
+        values = struct.unpack(f"={rows * cols}d", handle.read(rows * cols * 8))
     return rows, cols, values
 
 
@@ -61,6 +61,29 @@ def main() -> int:
         metadata = (output / "metadata.txt").read_text()
         assert "features=x1,x2" in metadata
         assert "target=y" in metadata
+
+        no_test_output = tmp / "no-test"
+        no_test_output.mkdir()
+        subprocess.run(
+            [
+                sys.executable,
+                str(repo / "scripts" / "prepare_data.py"),
+                "--input",
+                str(source),
+                "--output-dir",
+                str(no_test_output),
+                "--target",
+                "y",
+                "--test-ratio",
+                "0.0",
+            ],
+            check=True,
+        )
+
+        assert read_matrix(no_test_output / "x_train.bin")[:2] == (4, 2)
+        assert read_matrix(no_test_output / "y_train.bin")[:2] == (4, 1)
+        assert read_matrix(no_test_output / "x_test.bin")[:2] == (0, 2)
+        assert read_matrix(no_test_output / "y_test.bin")[:2] == (0, 1)
 
     return 0
 

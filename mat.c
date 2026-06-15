@@ -10,6 +10,14 @@ static Matrix matrix_empty(void) {
     return matrix;
 }
 
+static int binary_format_supported(void) {
+    if (sizeof(int) != 4 || sizeof(double) != 8) {
+        fprintf(stderr, "Matrix binary format requires 4-byte int and 8-byte double\n");
+        return 0;
+    }
+    return 1;
+}
+
 static double gaussian_noise(double mean, double stddev) {
     static int have_spare = 0;
     static double spare = 0.0;
@@ -36,12 +44,16 @@ static double gaussian_noise(double mean, double stddev) {
 
 Matrix matrix_new(int rows, int cols) {
     Matrix matrix = matrix_empty();
-    if (rows <= 0 || cols <= 0) {
+    if (rows < 0 || cols <= 0) {
         return matrix;
     }
 
     matrix.rows = rows;
     matrix.cols = cols;
+    if (rows == 0) {
+        return matrix;
+    }
+
     matrix.data = calloc((size_t)rows * (size_t)cols, sizeof(double));
     if (matrix.data == NULL) {
         perror("Unable to allocate matrix data");
@@ -92,6 +104,10 @@ void matrix_free(Matrix *matrix) {
 
 Matrix read_matrix_bin(const char *filename) {
     Matrix matrix = matrix_empty();
+    if (!binary_format_supported()) {
+        return matrix;
+    }
+
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         perror("Unable to open matrix file");
@@ -124,8 +140,12 @@ Matrix read_matrix_bin(const char *filename) {
 }
 
 int write_matrix_bin(const char *filename, const Matrix *matrix) {
-    if (matrix == NULL || matrix->data == NULL || matrix->rows <= 0 ||
-        matrix->cols <= 0) {
+    if (!binary_format_supported()) {
+        return 1;
+    }
+
+    if (matrix == NULL || matrix->rows < 0 || matrix->cols <= 0 ||
+        (matrix->rows > 0 && matrix->data == NULL)) {
         fprintf(stderr, "Cannot write an empty matrix\n");
         return 1;
     }
