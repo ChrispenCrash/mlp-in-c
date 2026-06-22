@@ -2,23 +2,22 @@
 #define MAT_H
 
 typedef struct {
-    double **data;
-    char **columns;
-    int nrows;
-    int ncols;
+    int rows;
+    int cols;
+    double *data;
 } Matrix;
 
-Matrix read_data(const char *filename);
+Matrix matrix_new(int rows, int cols);
+Matrix matrix_random(int rows, int cols, double mean, double stddev);
+Matrix read_matrix_bin(const char *filename);
 Matrix matmul(Matrix matrix1, Matrix matrix2);
-Matrix new_matrix(int nrows, int ncols);
 
-void print_data(Matrix matrix);
-void print_head(Matrix matrix);
-void print_tail(Matrix matrix);
-void print_cols(Matrix matrix);
-void free_data(Matrix matrix);
+int write_matrix_bin(const char *filename, const Matrix *matrix);
+double *matrix_at(Matrix *matrix, int row, int col);
+const double *matrix_at_const(const Matrix *matrix, int row, int col);
 
-double generateGaussianNoise(double mean, double stdDev);
-double random(double min, double max);
+void matrix_print(const Matrix *matrix);
+void matrix_print_head(const Matrix *matrix, int max_rows);
+void matrix_free(Matrix *matrix);
 
 #endif
